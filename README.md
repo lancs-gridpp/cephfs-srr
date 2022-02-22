@@ -1,6 +1,6 @@
 # cephfs-srr
 
-These scripts return a SRR JSON file containing information about the storage and endpoints.
+These scripts return a SRR JSON file containing information about the endpoints and storage mounted using CephFS.  It uses *ceph.quota.max_bytes* and *ceph.dir.rbytes* to get available and used space details.
 
 The latest version of the Storage Resource Reporting proposal can be found here:  
 https://docs.google.com/document/d/1yzCvKpxsbcQC5K9MyvXc-vBF1HGPBk4vhjw3MEXoXf8/edit 
