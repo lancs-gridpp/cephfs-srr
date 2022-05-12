@@ -42,19 +42,20 @@ import datetime
 from config import SystemConfig
 from storage import StorageService
 
+APP_VERSION = "1.0"
 
 try:
     handler = logging.handlers.SysLogHandler(address='/dev/log')
     log = logging.getLogger('cephssr')
     log.setLevel(logging.INFO)
     log.addHandler(handler)
-    log.info("storage-summary started")
+    log.info("Storage-Summary "+APP_VERSION+" started")
 
     config = SystemConfig()
     config.read()
     log.setLevel(config.logging_level)
 
-    storage = StorageService(config.hostname)
+    storage = StorageService(config.hostname,APP_VERSION)
     storage.add_endpoints(config.endpoints())
     storage.add_shares(config.shares())
     json = storage.to_json()

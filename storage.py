@@ -42,17 +42,18 @@ import time
 
 log = logging.getLogger('cephssr')
 
+
 # Holds the storage information and creates a JSON string.
 class StorageService(object):
 
-    def __init__(self, host):
+    def __init__(self, host, version):
         self.timestamp = int(time.time())
         self.data = {}
         self.data["datastores"] = []
         self.data["latestupdate"] = self.timestamp
         self.data["name"] = host
         self.data["implementation"] = "CEPHFS"
-        self.data["implementationversion"] = "0.1"
+        self.data["implementationversion"] = version
         self.data["qualitylevel"] = "production"
         self.data["storageshares"] = []
         self.data["storageendpoints"] = []
@@ -60,11 +61,15 @@ class StorageService(object):
     # Get the number of bytes in a directory (and subdirectories) from the 'ceph.dir.rbytes' attribute.
     # Returns 0 if there is a problem getting the value.
     def get_space_used(self, path):
+        log.debug("Getting space used for '%s'", path)
         try:
+            cmd = "getfattr -n ceph.dir.rbytes " + path + " --absolute-names --only-values; exit 0"
+            log.debug("Running command: " + cmd)
             ret = int(
                 subprocess.check_output(
-                    "getfattr -n ceph.dir.rbytes " + path + " --absolute-names --only-values; exit 0",
+                    cmd,
                     stderr=subprocess.STDOUT, shell=True).decode('utf-8'))
+            log.debug("Command Result: %d", ret)
         except Exception as e:
             log.error("Error getting space used for path %s - Error:%s", path, str(e))
             ret = 0;
@@ -73,32 +78,45 @@ class StorageService(object):
     # Get the quota set on a directory.  This is stored in the 'ceph.quota.max_bytes' attribute.
     # Returns 0 if there is a problem getting the value.
     def get_space_available(self, path):
+        log.debug("Getting space available for '%s'", path)
         try:
+            cmd = "getfattr -n ceph.quota.max_bytes " + path + " --absolute-names --only-values; exit 0"
+            log.debug("Running command: " + cmd)
             ret = int(
                 subprocess.check_output(
-                    "getfattr -n ceph.quota.max_bytes " + path + " --absolute-names --only-values; exit 0",
+                    cmd,
                     stderr=subprocess.STDOUT, shell=True).decode('utf-8'))
+            log.debug("Command Result: %d", ret)
         except Exception as e:
             log.error("Error getting space available for path %s - Error:%s", path, str(e))
             ret = 0;
         return ret
 
-    # Return the total available space and the used space for a directory
-    def get_storage_details(self, path):
-        total = self.get_space_available(path)
+    # Return the total available space and the used space for a directory.  The size of any directories in the
+    # exclude list will be deducted from the total.
+    def get_storage_details(self, path, exclude):
+        log.debug("Getting storage details for '%s'", path)
+        ext_used = 0;
+        for item in exclude:
+            ext_amount = self.get_space_used(item)
+            log.debug("Exclusion='%s', size=%d", item, ext_amount)
+            ext_used += ext_amount
         used = self.get_space_used(path)
+        log.debug("Total size: %d", used)
+        used = used - ext_used
+        log.debug("Total used minus exclusion: %d", used)
+        total = self.get_space_available(path)
+        log.debug("Space available for '%s': %d", path, total)
         return total, used
-
 
     def add_shares(self, list):
         self.data["storageshares"] = []
         for item in list:
-            total_size, used_size = self.get_storage_details(item["dirpath"])
+            total_size, used_size = self.get_storage_details(item["dirpath"], item["exclude"])
             if item['totalsize'] >= 0:
                 total_size = item['totalsize']
             self.data["storageshares"].append(
                 StorageShare(item["name"], total_size, used_size, item["paths"], item["vos"], self.timestamp))
-
 
     def add_endpoints(self, list):
         self.data["storageendpoints"] = []

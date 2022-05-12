@@ -40,6 +40,7 @@ import datetime
 from config import SystemConfig
 from storage import StorageService
 
+APP_VERSION = "1.0"
 
 def write_output_file(file_name, text):
     file = open(file_name, "w")
@@ -52,20 +53,20 @@ try:
     log = logging.getLogger('cephssr')
     log.setLevel(logging.INFO)
     log.addHandler(handler)
-    log.info("storage-summary started")
+    log.info("Storage-Summary "+APP_VERSION+" started")
 
     config = SystemConfig()
     config.read()
     log.setLevel(config.logging_level)
 
-    storage = StorageService(config.hostname)
+    storage = StorageService(config.hostname,APP_VERSION)
     storage.add_endpoints(config.endpoints())
     storage.add_shares(config.shares())
     json = storage.to_json()
 
     if config.output_to_file():
         write_output_file(config.output_file, json)
-        log.info("SRR json file created (%s)",config.output_file)
+        log.info("SRR json file created '%s'",config.output_file)
     else:
         print(json)
         log.info("SRR json output to console")

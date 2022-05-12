@@ -37,9 +37,10 @@
 import ast
 import configparser
 import logging
+import os
 import socket
 
-CONFIG_FILE = "cephsrr.conf"
+CONFIG_FILE = "/etc/cephsrr.conf"
 NO_OUTPUT_FILE = ""
 LOG_LEVEL = logging.INFO
 
@@ -57,6 +58,7 @@ class SystemConfig(object):
 
     # Read the config file and process the default section.
     def read(self):
+        log.debug("Reading config from "+CONFIG_FILE)
         # Read the config file.
         self.config.read(CONFIG_FILE)
 
@@ -92,9 +94,13 @@ class SystemConfig(object):
     def valid_section(self, section_name, settings):
         valid = True
         for key, value in settings.items():
+            # Make sure that all the values are set.
             if value == "":
                 valid = False
                 log.error("Config file error. %s cannot be blank in section %s", key, section_name)
+            if key == "exclude":
+                # Make sure the "exclude" values are in the in "dir" path
+                valid = valid and (len(value) == 0 or self.valid_exclude(settings["dirpath"], value))
         return valid
 
     # Get the "endpoint" sections from the config file.  Any endpoint sections with errors are not returned.
@@ -107,7 +113,10 @@ class SystemConfig(object):
                 epoint["endpointurl"] = self.config[section].get("endpointurl", "")
                 epoint["interfacetype"] = self.config[section].get("interfacetype", "")
                 if self.valid_section(section, epoint):
+                    log.debug("Endpoint section read and is valid: %s", section)
                     epoints.append(epoint)
+                else:
+                    log.debug("Endpoint %s is not valid", section)
         return epoints
 
     # Get the "share" sections from the config file. Any share sections with errors are not returned.
@@ -121,8 +130,12 @@ class SystemConfig(object):
                 share["vos"] = self.list_value(section, "vos")
                 share["dirpath"] = self.config[section].get("dirpath", "")
                 share["totalsize"] = self.convert_to_bytes(self.config[section].get("totalsize", ""))
+                share["exclude"] = self.list_value(section, "exclude")
                 if self.valid_section(section, share):
+                    log.debug("Share section read and is valid: %s", section)
                     shares.append(share)
+                else:
+                    log.debug("Share %s is not valid", section)
         return shares
 
     # Return True iff the json should be output to a file
@@ -148,3 +161,19 @@ class SystemConfig(object):
         except Exception as e:
             retval = -1
         return retval
+
+    def valid_exclude(self, dir_path, exclude):
+        valid = True
+        # Make sure there is a trailing slash.
+        dir_path = os.path.join(dir_path, "")
+        log.debug("Checking %s is a valid exclude for %s.", exclude, dir_path)
+        for item in exclude:
+            if item.find(dir_path) != 0:
+                log.error("%s is not a valid exlude for %s", item, dir_path)
+                valid = False
+                break
+        if valid:
+            log.debug("The exclude is valid")
+        else:
+            log.debug("The exlude is invalid")
+        return valid
