@@ -63,11 +63,13 @@ There can be more than one share section.  Each section must have a unique name 
     paths = ["/wlcg"]
     vos = ["wlcg"]
     dirpath= = /storage/wlcg
+    exclude = [ "/storage/wlcg/dir1", "/storage/wlcg/dir2" ]
     totalsize = 1.1PiB
 ```
 
 **name**,**paths**,**vos**,**dirpath** are written 'as is' to the the output JSON. 
-**totalsize** is optional.  If this is excluded the *totalsize* for a share will be detirmined by reading the extended attribute *ceph.quota.max_butes* set on specified **dirpath**.  
+**totalsize** is optional.  If this is excluded the *totalsize* for a share will be detirmined by reading the extended attribute *ceph.quota.max_butes* set on specified **dirpath**. 
+Any paths specified in the **exclude** option will be excluded when calculating disc usage.
 
 
 
