@@ -32,7 +32,7 @@ There should only be one default section defined.
 
 ### Endpoint Sections
 
-There can be more than one endpoint section.  Each section must have a unique name and start with *\[endpoint*. The text after *\[endpoint* and beofre *\]* is ignored.
+There can be more than one endpoint section.  Each section must have a unique name and start with *\[endpoint*. The text after *\[endpoint* and before *\]* is ignored.
 
 ```
 [endpoing-gsiftp]
