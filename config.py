@@ -31,7 +31,7 @@
 # 
 #  Contributors:
 # 
-#    * Gerard Hand <ghand@lancs.ac.uk>
+#    * Gerard Hand <g.hand@lancaster.ac.uk>
 # 
 
 import ast
@@ -40,12 +40,13 @@ import logging
 import os
 import socket
 
-CONFIG_FILE = "/etc/cephsrr.conf"
-NO_OUTPUT_FILE = ""
-LOG_LEVEL = logging.INFO
+CONFIG_FILE     = "/etc/cephsrr.conf"
+NO_OUTPUT_FILE  = ""
+LOG_LEVEL       = logging.INFO
+IMPLEMENTATION  = "xrootd_ceph"
+QUALITY_LEVEL   = "production"
 
 log = logging.getLogger('cephssr')
-
 
 # Read settings held in CONFIG_FILE
 class SystemConfig(object):
@@ -55,6 +56,8 @@ class SystemConfig(object):
         self.hostname = ""
         self.output_file = ""
         self.logging_level = LOG_LEVEL
+        self.implementation = IMPLEMENTATION
+        self.quality_level = QUALITY_LEVEL
 
     # Read the config file and process the default section.
     def read(self):
@@ -63,6 +66,9 @@ class SystemConfig(object):
         self.config.read(CONFIG_FILE)
 
         # Proess the "default" section.
+        self.implementation = self.config['default'].get("implementation",IMPLEMENTATION)
+        self.quality_level = self.config['default'].get("qualitylevel",QUALITY_LEVEL)
+
         # Host name: Use fqdn if the entry isn't present in the config file or it is blank.
         self.hostname = self.config["default"].get("hostname", "")
         if self.hostname == "":

@@ -34,7 +34,7 @@
 #
 # Contributors:
 #
-#   * Gerard Hand <ghand@lancs.ac.uk>
+#   * Gerard Hand <g.hand@lancaster.ac.uk>
 #
 #
 import logging.handlers
@@ -42,7 +42,7 @@ import datetime
 from config import SystemConfig
 from storage import StorageService
 
-APP_VERSION = "1.0"
+APP_VERSION = "1.1.0"
 
 try:
     handler = logging.handlers.SysLogHandler(address='/dev/log')
@@ -55,7 +55,7 @@ try:
     config.read()
     log.setLevel(config.logging_level)
 
-    storage = StorageService(config.hostname,APP_VERSION)
+    storage = StorageService(config.hostname, config.implementation, config.quality_level)
     storage.add_endpoints(config.endpoints())
     storage.add_shares(config.shares())
     json = storage.to_json()

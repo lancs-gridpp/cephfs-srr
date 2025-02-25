@@ -46,15 +46,15 @@ log = logging.getLogger('cephssr')
 # Holds the storage information and creates a JSON string.
 class StorageService(object):
 
-    def __init__(self, host, version):
+    def __init__(self, host, implementation, quality_level):
         self.timestamp = int(time.time())
         self.data = {}
         self.data["datastores"] = []
         self.data["latestupdate"] = self.timestamp
         self.data["name"] = host
-        self.data["implementation"] = "CEPHFS"
-        self.data["implementationversion"] = version
-        self.data["qualitylevel"] = "production"
+        self.data["implementation"] = implementation
+        self.data["implementationversion"] = "0.1"
+        self.data["qualitylevel"] = quality_level
         self.data["storageshares"] = []
         self.data["storageendpoints"] = []
 
