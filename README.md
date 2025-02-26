@@ -8,13 +8,70 @@ https://docs.google.com/document/d/1yzCvKpxsbcQC5K9MyvXc-vBF1HGPBk4vhjw3MEXoXf8/
 
 ## Installation
 
- * Create /usr/share/cephsrr
- * Copy the python files (*.py) to /usr/share/cephsrr
- * Make sure storage-summary.py has execute permissions set.
- * Create a link (storage-summary) in /usr/bin to /usr/share/cephsrr/storage-summary.py
- * Copy cephsrr.conf to /etc and edit.
+The installation has changed. Installation can now be done using pip
 
-## Configuration File (cephsrr.conf)
+ * Download the source.  Either clone https://github.com/lancs-gridpp/cephfs-srr.git or download and extract the *.tar.gz* file from the */dist* directory.
+ * In the root directory of the source, run the following command as the user that will run the storage_summary script.
+   This will install the cephfs-srr python package and place the ``storage_summary`` script in the system PATH.
+   
+ ```
+ $ pip3 install .
+ ```
+
+  * You can verify the installation with
+
+ ```
+ $ which storage_summary
+ ```
+ 
+ 
+ * Copy cephsrr.conf to /etc and edit. See: [Configuration File - cephsrr.conf](#Configuration File - cephsrr.conf)
+ 
+## Uninstalling
+To remove the executable script *storage_summary* and the python package cephfs_srr run:
+
+```
+$ pip3 uninstall cephfs_srr
+```
+
+
+## Upgrading from V1.0
+> [!NOTE]
+> Because of the change to the installation procedure, there has been a name change from *storage-summary.py* to *storage_summary*.
+
+If you are running version 1.0 you need to manually remove  ```/usr/share/cephsrr``` and the link in ```/usr/bin``` to ```storage-summary.py``
+
+Either clone https://github.com/lancs-gridpp/cephfs-srr.git or download and extract the tar.gz file from the dist directory.
+ * In the source root directory, run the following as the user that will run the storage_summary script. 
+   This will install the cephfs-srr python package and place the ```storage_summary``` script in the system PATH.  
+   
+ ```
+ pip3 install .
+ ```
+ 
+There are some extra configuration settings that will need adding to the cephsrr.conf
+```
+    [default]
+    implementation = xrootd_cephfs
+    implementationversion = 
+    qualitylevel = production
+```
+
+*implementationversion* will need setting to your version of xrootd.
+ 
+## Building Distribution Files
+
+Run the following command in the source root directory.
+
+```
+$ python3 -m build
+```
+
+This will create a *.tar.gz* file and a *.whl* file in the *dist* directory. 
+
+If you need to add extra files to the distribution files, add them into the *MANIFEST.in* file.
+
+## Configuration File - cephsrr.conf
 There are 3 section types in the configuration file: default, endpoint and share.  
 
 ### Default Section
@@ -25,10 +82,14 @@ There should only be one default section defined.
     hostname = fal-pygrid-30.lancs.ac.uk
     srroutput = /storage/srr.json
     logginglevel = info
+    implementation = xrootd_cephfs
+    qualitylevel = production
 ```
-**hostname** is optional. The machines hostname is used if not specified here.
-**srroutput** specifies where the output JSON should be written to.  If this is excluded the output will go to stdout.
-**logginglevel** specifies the level of logging output. The options are: debug, info, warning, error, critical.
+ * **hostname** is optional. The machines hostname is used if not specified here.
+ * **srroutput** specifies where the output JSON should be written to.  If this is excluded the output will go to stdout.
+ * **logginglevel** specifies the level of logging output. The options are: debug, info, warning, error, critical.
+ * **implementation** Text output in the json.
+ * **qualitylevel** Text output in the json.
 
 ### Endpoint Sections
 
@@ -83,7 +144,7 @@ https://twiki.cern.ch/twiki/pub/LCG/StorageSpaceAccounting/xrootd.srr.slac.json
         "datastores": [], 
         "latestupdate": TIMESTAMP,
         "name": "slac.stanford.edu", 
-        "implementation": "xrootd", 
+        "implementation": "xrootd-ceph", 
         "implementationversion": "4.8.5"
         "storagecapacity" : {
             "offline" : {

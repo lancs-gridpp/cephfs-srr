@@ -40,11 +40,12 @@ import logging
 import os
 import socket
 
-CONFIG_FILE     = "/etc/cephsrr.conf"
-NO_OUTPUT_FILE  = ""
-LOG_LEVEL       = logging.INFO
-IMPLEMENTATION  = "xrootd_ceph"
-QUALITY_LEVEL   = "production"
+CONFIG_FILE         = "/etc/cephsrr.conf"
+NO_OUTPUT_FILE      = ""
+LOG_LEVEL           = logging.INFO
+IMPLEMENTATION      = "xrootd_cephfs"
+IMPLEMENTATION_VER  = ""
+QUALITY_LEVEL       = "production"
 
 log = logging.getLogger('cephssr')
 
@@ -57,6 +58,7 @@ class SystemConfig(object):
         self.output_file = ""
         self.logging_level = LOG_LEVEL
         self.implementation = IMPLEMENTATION
+        self.implementationversion = IMPLEMENTATION_VER
         self.quality_level = QUALITY_LEVEL
 
     # Read the config file and process the default section.
@@ -67,6 +69,7 @@ class SystemConfig(object):
 
         # Proess the "default" section.
         self.implementation = self.config['default'].get("implementation",IMPLEMENTATION)
+        self.implementationversion = self.config['default'].get("implementationversion",IMPLEMENTATION_VER)
         self.quality_level = self.config['default'].get("qualitylevel",QUALITY_LEVEL)
 
         # Host name: Use fqdn if the entry isn't present in the config file or it is blank.

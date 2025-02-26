@@ -37,8 +37,10 @@
 
 import logging.handlers
 import datetime
-from config import SystemConfig
-from storage import StorageService
+#from config import SystemConfig
+#from storage import StorageService
+from cephfs_srr.config import SystemConfig
+from cephfs_srr.storage import StorageService
 
 APP_VERSION     = "1.1.0"
 
@@ -48,28 +50,33 @@ def write_output_file(file_name, text):
     file.close()
 
 
-try:
-    handler = logging.handlers.SysLogHandler(address='/dev/log')
-    log = logging.getLogger('cephssr')
-    log.setLevel(logging.INFO)
-    log.addHandler(handler)
-    log.info("Storage-Summary "+APP_VERSION+" started")
+def main():
+    try:
+        handler = logging.handlers.SysLogHandler(address='/dev/log')
+        log = logging.getLogger('cephssr')
+        log.setLevel(logging.INFO)
+        log.addHandler(handler)
+        log.info("Storage Summary "+APP_VERSION+" started")
 
-    config = SystemConfig()
-    config.read()
-    log.setLevel(config.logging_level)
+        config = SystemConfig()
+        config.read()
+        log.setLevel(config.logging_level)
 
-    storage = StorageService(config.hostname, config.implementation, config.quality_level)
-    storage.add_endpoints(config.endpoints())
-    storage.add_shares(config.shares())
-    json = storage.to_json()
+        storage = StorageService(config.hostname, config.implementation, config.implementationversion, config.quality_level)
+        storage.add_endpoints(config.endpoints())
+        storage.add_shares(config.shares())
+        json = storage.to_json()
 
-    if config.output_to_file():
-        write_output_file(config.output_file, json)
-        log.info("SRR json file created '%s'",config.output_file)
-    else:
-        print(json)
-        log.info("SRR json output to console")
+        if config.output_to_file():
+            write_output_file(config.output_file, json)
+            log.info("SRR json file created '%s'",config.output_file)
+        else:
+            print(json)
+            log.info("SRR json output to console")
 
-except Exception as e:
-    log.error("unable to create SRR json for CephFS: %s", str(e))
+    except Exception as e:
+        log.error("unable to create SRR json for CephFS: %s", str(e))
+
+
+if __name__ == "__main__":
+    main()

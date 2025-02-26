@@ -39,8 +39,10 @@
 #
 import logging.handlers
 import datetime
-from config import SystemConfig
-from storage import StorageService
+#from config import SystemConfig
+#from storage import StorageService
+from cephfs_srr.config import SystemConfig
+from cephfs_srr.storage import StorageService
 
 APP_VERSION = "1.1.0"
 
@@ -49,13 +51,13 @@ try:
     log = logging.getLogger('cephssr')
     log.setLevel(logging.INFO)
     log.addHandler(handler)
-    log.info("Storage-Summary "+APP_VERSION+" started")
+    log.info("Storage Summary "+APP_VERSION+" started")
 
     config = SystemConfig()
     config.read()
     log.setLevel(config.logging_level)
 
-    storage = StorageService(config.hostname, config.implementation, config.quality_level)
+    storage = StorageService(config.hostname, config.implementation, config.implementationversion, config.quality_level)
     storage.add_endpoints(config.endpoints())
     storage.add_shares(config.shares())
     json = storage.to_json()
