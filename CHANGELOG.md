@@ -9,7 +9,6 @@
     qualitylevel = production
     ```
 * Added files to allow installing/uninstalling using pip3. 
-* The dist directory has been created and contains a source tar.gz and wheel.
 
 ### Changed
 * Changed the packaging (sorry) so it can be installed using *pip3*. The *cephfs_srr* package is installed and the runnable script *storage_summary* in the PATH .  
