@@ -10,7 +10,7 @@ https://docs.google.com/document/d/1yzCvKpxsbcQC5K9MyvXc-vBF1HGPBk4vhjw3MEXoXf8/
 
 The installation has changed. Installation can now be done using pip
 
- * Download the source.  Either clone https://github.com/lancs-gridpp/cephfs-srr.git or download and extract the *.tar.gz* file from the */dist* directory.
+ * Clone https://github.com/lancs-gridpp/cephfs-srr.git.
  * In the root directory of the source, run the following command as the user that will run the storage_summary script.
    This will install the cephfs-srr python package and place the executable *storage_summary* script in the system PATH.
    
