@@ -4,3 +4,4 @@ __pycache__/*
 *.geany
 cephfs_srr.egg-info/*
 build/*
+dist/*
