@@ -58,11 +58,11 @@ $ pip3 uninstall cephfs_srr
 > [!NOTE]
 > Because of the change to the installation procedure, there has been a name change from *storage-summary.py* to *storage_summary*.
 
-If you are running version 1.0 you need to manually remove  ```/usr/share/cephsrr``` and the link in ```/usr/bin``` to ```storage-summary.py``
+If you are running version 1.0 you need to manually remove  */usr/share/cephsrr* and the link in */usr/bin* to *storage-summary.py*
 
 Either clone https://github.com/lancs-gridpp/cephfs-srr.git or download and extract the tar.gz file from the dist directory.
  * In the source root directory, run the following as the user that will run the storage_summary script. 
-   This will install the cephfs-srr python package and place the ```storage_summary``` script in the system PATH.  
+   This will install the cephfs-srr python package and place an executable *storage_summary* script in a directory in the system PATH.
    
  ```
  pip3 install .
