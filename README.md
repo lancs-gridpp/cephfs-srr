@@ -25,7 +25,7 @@ The installation has changed. Installation can now be done using pip
  ```
  
  
- * Copy cephsrr.conf to /etc and edit. See: [Configuration File - cephsrr.conf](#Configuration File - cephsrr.conf)
+ * Copy cephsrr.conf to /etc and edit. See: [Configuration File - cephsrr.conf](#Configuration-File---cephsrr.conf)
  
 ### Python Setup Tools
 
@@ -55,7 +55,7 @@ $ pip3 uninstall cephfs_srr
 
 
 ## Upgrading from V1.0
-> [!NOTE]
+> !NOTE]
 > Because of the change to the installation procedure, there has been a name change from *storage-summary.py* to *storage_summary*.
 
 If you are running version 1.0 you need to manually remove  */usr/share/cephsrr* and the link in */usr/bin* to *storage-summary.py*
