@@ -12,7 +12,7 @@ The installation has changed. Installation can now be done using pip
 
  * Download the source.  Either clone https://github.com/lancs-gridpp/cephfs-srr.git or download and extract the *.tar.gz* file from the */dist* directory.
  * In the root directory of the source, run the following command as the user that will run the storage_summary script.
-   This will install the cephfs-srr python package and place the ``storage_summary`` script in the system PATH.
+   This will install the cephfs-srr python package and place the executable *storage_summary* script in the system PATH.
    
  ```
  $ pip3 install .
@@ -25,7 +25,7 @@ The installation has changed. Installation can now be done using pip
  ```
  
  
- * Copy cephsrr.conf to /etc and edit. See: [Configuration File - cephsrr.conf](#Configuration-File---cephsrr.conf)
+ * Copy cephsrr.conf to /etc and edit. See: [Configuration File](#configuration-file)
  
 ### Python Setup Tools
 
@@ -90,7 +90,10 @@ This will create a *.tar.gz* file and a *.whl* file in the *dist* directory.
 
 If you need to add extra files to the distribution files, add them into the *MANIFEST.in* file.
 
-## Configuration File - cephsrr.conf
+## Configuration File
+
+Location: */etc/cephsrr.conf*
+
 There are 3 section types in the configuration file: default, endpoint and share.  
 
 ### Default Section
