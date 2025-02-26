@@ -27,6 +27,25 @@ The installation has changed. Installation can now be done using pip
  
  * Copy cephsrr.conf to /etc and edit. See: [Configuration File - cephsrr.conf](#Configuration File - cephsrr.conf)
  
+### Python Setup Tools
+
+Older versions of python/setuptools do not support using a *.toml* file so a setup.py has also been included.
+
+You can update your setup tools with:
+```
+$ pip3 install --upgrade setuptools
+```
+
+### Building Distribution .tar.gz and Wheel
+
+To build a package *.tar.gz* and wheel run
+
+```
+$ python3 -m build
+```
+
+This will create the *dist* directory containing .tar.gz* and *.whl* files.
+ 
 ## Uninstalling
 To remove the executable script *storage_summary* and the python package cephfs_srr run:
 
@@ -132,6 +151,14 @@ There can be more than one share section.  Each section must have a unique name 
 **totalsize** is optional.  If this is excluded the *totalsize* for a share will be detirmined by reading the extended attribute *ceph.quota.max_butes* set on specified **dirpath**. 
 Any paths specified in the **exclude** option will be excluded when calculating disc usage.
 
+## Logging 
+*storage_summary* logs to */dev/log*. The level of logging can be set using the cephsrr.conf file. 
+
+```
+[default]
+    # Level of logging: debug, info, warning, error, critical
+    logginglevel = info
+```
 
 
 ## Example SRR
@@ -246,3 +273,5 @@ https://twiki.cern.ch/twiki/pub/LCG/StorageSpaceAccounting/xrootd.srr.slac.json
     }
 }
 ```
+
+
